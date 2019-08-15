@@ -71,12 +71,17 @@ spec:
           ports:
             - name: mysql
               containerPort: 3306
-          volumeMounts:
-            - name: mysql-persistent-storage
-              mountPath: /var/lib/mysql
-            - name: mysql-secret
-              mountPath: "/run/secrets/sindan-net.com"
-              readOnly: true
+          redinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "mysqladmin ping -h 127.0.0.1 -u ${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)"
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 2
+            failureThreshold: 2
           livenessProbe:
             exec:
               command:
@@ -86,7 +91,14 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 1
             timeoutSeconds: 1
+            successThreshold: 2
             failureThreshold: 2
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-secret
+              mountPath: "/run/secrets/sindan-net.com"
+              readOnly: true
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
