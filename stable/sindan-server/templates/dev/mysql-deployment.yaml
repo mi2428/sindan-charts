@@ -33,7 +33,7 @@ type: Opaque
 data:
   root-password: cGFzc3dvcmQ=
 ---
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
