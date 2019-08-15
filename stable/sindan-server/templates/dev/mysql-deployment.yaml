@@ -23,6 +23,11 @@ metadata:
   namespace: sindan-server
 spec:
   storageClassName: mysql
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Secret
@@ -43,7 +48,7 @@ spec:
   selector:
     matchLabels:
       app: mysql
-  storategy:
+  strategy:
     type: Recreate
   template:
     metadata:
@@ -57,7 +62,7 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  mame: mysql-secret
+                  name: mysql-secret
                   key: root-password
           ports:
             - name: mysql
@@ -67,7 +72,7 @@ spec:
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-persistent-storage
-          PersistentVolumeClaim:
+          persistentVolumeClaim:
             claimName: mysql-pvc
 ---
 apiVersion: v1
