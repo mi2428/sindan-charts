@@ -32,11 +32,11 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: secret
+  name: mysql-secret
   namespace: sindan-server
 type: Opaque
 data:
-  db-password: cGFzc3dvcmQ=
+  root-password: cGFzc3dvcmQ=
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -56,50 +56,24 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: sindan/mysql:1.1.0
+        - image: mysql:5.7
           name: mysql
           env:
-            - name: MYSQL_RANDOM_ROOT_PASSWORD
-              value: "yes"
-            - name: MYSQL_DATABASE
-              value: "sindan_production"
-            - name: MYSQL_USER
-              value: "sindan"
             - name: MYSQL_ROOT_PASSWORD
-              value: "/run/secrets/db_password"
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: root-password
           ports:
             - name: mysql
               containerPort: 3306
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
-            - name: db-secret
-              mountPath: "/run/secrets/db_password"
-              readOnly: true
-          readinessProbe:
-            exec:
-              command:
-                - mysqladmin
-                - ping
-                - -h
-                - 127.0.0.1
-                - -u
-                - $$MYSQL_USER
-                - --password=$$(cat /run/secrets/db_password)
-            initialDelaySeconds: 30
-            periodSeconds: 5
-            timeoutSeconds: 1
-            failureThreshold: 3
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
-        - name: db-secret
-          secret:
-            secretName: secret
-            items:
-              - key: db-password
-                path: db_password
 ---
 apiVersion: v1
 kind: Service
