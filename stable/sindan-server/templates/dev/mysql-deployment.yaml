@@ -71,12 +71,13 @@ spec:
           ports:
             - name: mysql
               containerPort: 3306
-          redinessProbe:
+          readinessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - "mysqladmin ping -h 127.0.0.1 -u ${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)"
+                - mysqladmin
+                - ping
+                - -u${MYSQL_USER}
+                - -p$(cat /run/secrets/sindan-net.com/db_password)
             initialDelaySeconds: 10
             periodSeconds: 1
             timeoutSeconds: 1
@@ -85,13 +86,14 @@ spec:
           livenessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - "mysqladmin ping -h 127.0.0.1 -u ${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)"
+                - mysqladmin
+                - ping
+                - -u${MYSQL_USER}
+                - -p$(cat /run/secrets/sindan-net.com/db_password)
             initialDelaySeconds: 10
             periodSeconds: 1
             timeoutSeconds: 1
-            successThreshold: 2
+            successThreshold: 1
             failureThreshold: 2
           volumeMounts:
             - name: mysql-persistent-storage
