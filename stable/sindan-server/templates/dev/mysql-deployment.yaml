@@ -74,10 +74,9 @@ spec:
           readinessProbe:
             exec:
               command:
-                - mysqladmin
-                - ping
-                - -u${MYSQL_USER}
-                - -p$(cat /run/secrets/sindan-net.com/db_password)
+                - /bin/sh
+                - -c
+                - mysqladmin ping -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)
             initialDelaySeconds: 10
             periodSeconds: 1
             timeoutSeconds: 1
@@ -86,10 +85,9 @@ spec:
           livenessProbe:
             exec:
               command:
-                - mysqladmin
-                - ping
-                - -u${MYSQL_USER}
-                - -p$(cat /run/secrets/sindan-net.com/db_password)
+                - /bin/sh
+                - -c
+                - mysqladmin ping -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)
             initialDelaySeconds: 10
             periodSeconds: 1
             timeoutSeconds: 1
