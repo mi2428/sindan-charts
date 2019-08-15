@@ -6,6 +6,7 @@ spec:
   storageClassName: mysql
   capacity:
     storage: 10Gi
+  persistentVolumeReclaimPolicy: Recycle
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -32,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: secret
+  name: sindan-server-secret
   namespace: sindan-server
 type: Opaque
 data:
@@ -56,7 +57,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - image: sindan/mysql:1.1.0
+        - image: mysql:5.7
           name: mysql
           env:
             - name: MYSQL_RANDOM_ROOT_PASSWORD
@@ -65,18 +66,18 @@ spec:
               value: "sindan_production"
             - name: MYSQL_USER
               value: "sindan"
-            - name: MYSQL_ROOT_PASSWORD
-              value: "/run/secrets/db_password"
+            - name: MYSQL_PASSWORD_FILE
+              value: "/run/secrets/sindan-net.com/db_password"
           ports:
             - name: mysql
               containerPort: 3306
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
-            - name: db-secret
-              mountPath: "/run/secrets/db_password"
+            - name: mysql-secret
+              mountPath: "/run/secrets/sindan-net.com"
               readOnly: true
-          readinessProbe:
+          livenessProbe:
             exec:
               command:
                 - mysqladmin
@@ -84,19 +85,19 @@ spec:
                 - -h
                 - 127.0.0.1
                 - -u
-                - $$MYSQL_USER
-                - --password=$$(cat /run/secrets/db_password)
-            initialDelaySeconds: 30
-            periodSeconds: 5
+                - $MYSQL_USER
+                - --password=$(cat /run/secrets/db_password)
+            initialDelaySeconds: 5
+            periodSeconds: 1
             timeoutSeconds: 1
             failureThreshold: 3
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pvc
-        - name: db-secret
+        - name: mysql-secret
           secret:
-            secretName: secret
+            secretName: sindan-server-secret
             items:
               - key: db-password
                 path: db_password
