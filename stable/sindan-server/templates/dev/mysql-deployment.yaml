@@ -82,15 +82,13 @@ spec:
               command:
                 - mysqladmin
                 - ping
-                - -h
-                - 127.0.0.1
                 - -u
                 - $MYSQL_USER
-                - --password=$(cat /run/secrets/db_password)
-            initialDelaySeconds: 5
+                - --password=$(cat /run/secrets/sindan-net.com/db_password)
+            initialDelaySeconds: 2
             periodSeconds: 1
             timeoutSeconds: 1
-            failureThreshold: 3
+            failureThreshold: 2
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
