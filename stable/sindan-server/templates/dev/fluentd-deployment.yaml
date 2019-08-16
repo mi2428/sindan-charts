@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sindan-server
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sindan-server-secret
+  namespace: sindan-server
+type: Opaque
+data:
+  db-password: cGFzc3dvcmQ=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: sindan-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+        - image: sindan/fluentd:1.2.0
+          name: fluentd
+          env:
+            - name: DB_NAME
+              value: "sindan_production"
+            - name: DB_GRANTED_USER
+              value: "sindan"
+            - name: DB_PASSWORD_FILE
+              value: "/run/secrets/sindan-net.com/db_password"
+          ports:
+            - name: healthcheck
+              containerPort: 8080
+            - name: fluentd
+              containerPort: 8888
+          volumeMounts:
+            - name: fluentd-secret
+              mountPath: "/run/secrets/sindan-net.com"
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: healthcheck
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              path: /
+              port: healthcheck
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 2
+            failureThreshold: 2
+      volumes:
+        - name: fluentd-secret
+          secret:
+            secretName: sindan-server-secret
+            items:
+              - key: db-password
+                path: db_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: fluentd
