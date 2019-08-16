@@ -25,15 +25,6 @@ spec:
     requests:
       storage: 10Gi
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sindan-server-secret
-  namespace: sindan-server
-type: Opaque
-data:
-  db-password: cGFzc3dvcmQ=
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

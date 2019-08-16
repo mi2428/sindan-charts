@@ -28,13 +28,13 @@ spec:
             - name: RAILS_SECRETKEY_FILE
               value: "/run/secrets/sindan-net.com/rails_secret_key_base"
             - name: ACCOUNTS_FILE
-              value: "/run/secrets/sindan-net.com/accounts.yml"
+              value: "/run/secrets/sindan-net.com/accounts"
           ports:
             - name: visualization
               containerPort: 3000
               protocol: TCP
           volumeMounts:
-            - name: rails-secret
+            - name: secrets
               mountPath: "/run/secrets/sindan-net.com"
               readOnly: true
           livenessProbe:
@@ -56,7 +56,7 @@ spec:
             successThreshold: 2
             failureThreshold: 2
       volumes:
-        - name: rails-secret
+        - name: secrets
           secret:
             secretName: sindan-server-secret
             items:
@@ -65,7 +65,7 @@ spec:
               - key: rails-secret-key-base
                 path: rails_secret_key_base
               - key: accounts.yml
-                path: accounts.yml
+                path: accounts
 ---
 apiVersion: v1
 kind: Service

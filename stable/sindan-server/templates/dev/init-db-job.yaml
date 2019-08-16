@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-init
+  namespace: sindan-server
+spec:
+  template:
+    spec:
+      containers:
+        - image: sindan/visualization:1.2.0
+          name: init-mysql
+          env:
+            - name: DB_NAME
+              value: "sindan_production"
+            - name: DB_GRANTED_USER
+              value: "sindan"
+            - name: DB_PASSWORD_FILE
+              value: "/run/secrets/sindan-net.com/db_password"
+            - name: RAILS_SECRETKEY_FILE
+              value: "/run/secrets/sindan-net.com/rails_secret_key_base"
+          volumeMounts:
+            - name: secrets
+              mountPath: "/run/secrets/sindan-net.com"
+              readOnly: true
+          command: ["sh", "-c"]
+          args: ["bundle exec rails db:migrate"]
+      restartPolicy: OnFailure
+      volumes:
+        - name: secrets
+          secret:
+            secretName: sindan-server-secret
+            items:
+              - key: db-password
+                path: db_password
+              - key: rails-secret-key-base
+                path: rails_secret_key_base
