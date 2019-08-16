@@ -13,11 +13,6 @@ spec:
     path: "/mnt/kubernetes/pv/sindan-mysql"
 ---
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: sindan-server
----
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc

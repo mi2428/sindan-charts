@@ -1,24 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sindan-server
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sindan-server-secret
-  namespace: sindan-server
-type: Opaque
-data:
-  db-password: cGFzc3dvcmQ=
-  rails-secret-key-base: SWYteW91LWNoYW5nZS10aGlzLXlvdS1uZWVkLXRvLWJ1aWxkLWRvY2tlcmZpbGUtbG9jYWxseQ==
-stringData:
-  accounts.yml: |-
-    accounts:
-      - username: sindan
-        email: sindan-wg@wide.ad.jp
-        password: changeme
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
