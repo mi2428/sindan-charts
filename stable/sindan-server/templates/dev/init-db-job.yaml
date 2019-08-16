@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: mysql-init
+  name: init-mysql
   namespace: sindan-server
 spec:
   template:
@@ -22,8 +22,11 @@ spec:
             - name: secrets
               mountPath: "/run/secrets/sindan-net.com"
               readOnly: true
-          command: ["sh", "-c"]
-          args: ["bundle exec rails db:migrate"]
+          command:
+            - bundle
+            - exec
+            - rails
+            - db:migrate
       restartPolicy: OnFailure
       volumes:
         - name: secrets
