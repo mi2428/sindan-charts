@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sindan-server
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sindan-server-secret
+  namespace: sindan-server
+type: Opaque
+data:
+  db-password: cGFzc3dvcmQ=
+  rails-secret-key-base: SWYteW91LWNoYW5nZS10aGlzLXlvdS1uZWVkLXRvLWJ1aWxkLWRvY2tlcmZpbGUtbG9jYWxseQ==
+stringData:
+  accounts.yml: |-
+    accounts:
+      - username: sindan
+        email: sindan-wg@wide.ad.jp
+        password: changeme
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualization
+  namespace: sindan-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visualization
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: visualization
+    spec:
+      containers:
+        - image: sindan/visualization:1.2.0
+          name: visualization
+          env:
+            - name: DB_NAME
+              value: "sindan_production"
+            - name: DB_GRANTED_USER
+              value: "sindan"
+            - name: DB_PASSWORD_FILE
+              value: "/run/secrets/sindan-net.com/db_password"
+            - name: RAILS_SECRETKEY_FILE
+              value: "/run/secrets/sindan-net.com/rails_secret_key_base"
+            - name: ACCOUNTS_FILE
+              value: "/run/secrets/sindan-net.com/accounts.yml"
+          ports:
+            - name: visualization
+              containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - name: rails-secret
+              mountPath: "/run/secrets/sindan-net.com"
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: visualization
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              path: /
+              port: visualization
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            timeoutSeconds: 1
+            successThreshold: 2
+            failureThreshold: 2
+      volumes:
+        - name: rails-secret
+          secret:
+            secretName: sindan-server-secret
+            items:
+              - key: db-password
+                path: db_password
+              - key: rails-secret-key-base
+                path: rails_secret_key_base
+              - key: accounts.yml
+                path: accounts.yml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualization
+spec:
+  ports:
+    - port: 3000
+  selector:
+    app: visualization
