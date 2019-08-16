@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+  namespace: sindan-server
+spec:
+  containers:
+    - image: busybox:1.28.4
+      name: mypod
+      command:
+        - sleep
+        - "3600"
+      imagePullPolicy: IfNotPresent
+  restartPolicy: Never
