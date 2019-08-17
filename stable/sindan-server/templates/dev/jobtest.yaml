@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: samplejob
+  namespace: sindan-server
+spec:
+  template:
+    spec:
+      containers:
+        - image: busybox:1.28.4
+          name: create-empty-file
+          command:
+            - sh
+            - -c
+            - "echo by-samplejob > /deleteme.txt"
+  restartPolicy: OnFailure
