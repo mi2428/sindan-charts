@@ -11,6 +11,12 @@ spec:
         - sleep
         - "360000"
       imagePullPolicy: IfNotPresent
+    - image: mi2428/wait-for-it:latest
+      name: waitforit
+      command:
+        - sleep
+        - "360000"
+      imagePullPolicy: IfNotPresent
     - image: sindan/visualization:1.2.0
       name: visualization
       command:
