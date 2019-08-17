@@ -5,13 +5,15 @@ metadata:
 spec:
   storageClassName: mysql
   capacity:
-    storage: 10Gi
+    storage: 4Gi
   persistentVolumeReclaimPolicy: Recycle
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/kubernetes/pv/sindan-mysql"
+
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -23,8 +25,10 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 4Gi
+
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -95,7 +99,9 @@ spec:
             items:
               - key: db-password
                 path: db_password
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
