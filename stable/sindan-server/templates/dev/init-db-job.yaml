@@ -8,7 +8,11 @@ spec:
     spec:
       containers:
         - image: sindan/visualization:1.2.0
-          name: init-mysql
+          name: migration
+          command:
+            - sh
+            - -c
+            - "bundle exec rails db:migrate"
           env:
             - name: DB_NAME
               value: "sindan_production"
@@ -22,12 +26,27 @@ spec:
             - name: secrets
               mountPath: "/run/secrets/sindan-net.com"
               readOnly: true
+        - image: sindan/visualization:1.2.0
+          name: create-account
           command:
-            - bundle
-            - exec
-            - rails
-            - db:migrate
-      restartPolicy: OnFailure
+            - sh
+            - -c
+            - "bundle exec rails db:seed"
+          env:
+            - name: DB_NAME
+              value: "sindan_production"
+            - name: DB_GRANTED_USER
+              value: "sindan"
+            - name: DB_PASSWORD_FILE
+              value: "/run/secrets/sindan-net.com/db_password"
+            - name: RAILS_SECRETKEY_FILE
+              value: "/run/secrets/sindan-net.com/rails_secret_key_base"
+            - name: ACCOUNTS_FILE
+              value: "/run/secrets/sindan-net.com/accounts"
+          volumeMounts:
+            - name: secrets
+              mountPath: "/run/secrets/sindan-net.com"
+              readOnly: true
       volumes:
         - name: secrets
           secret:
@@ -37,3 +56,6 @@ spec:
                 path: db_password
               - key: rails-secret-key-base
                 path: rails_secret_key_base
+              - key: accounts.yml
+                path: accounts
+      restartPolicy: OnFailure
