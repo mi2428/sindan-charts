@@ -72,15 +72,3 @@ spec:
             items:
               - key: db-password
                 path: db_password
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: fluentd
-spec:
-  ports:
-    - port: 8080
-  selector:
-    app: fluentd

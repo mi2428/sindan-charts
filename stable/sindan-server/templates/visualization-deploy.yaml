@@ -81,16 +81,3 @@ spec:
                 path: rails_secret_key_base
               - key: accounts.yml
                 path: accounts
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: visualization
-  namespace: sindan-server
-spec:
-  ports:
-    - port: 3000
-  selector:
-    app: visualization
