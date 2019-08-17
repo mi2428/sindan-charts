@@ -9,13 +9,13 @@ spec:
       name: busybox
       command:
         - sleep
-        - "3600"
+        - "360000"
       imagePullPolicy: IfNotPresent
     - image: sindan/visualization:1.2.0
       name: visualization
       command:
         - sleep
-        - "3600"
+        - "360000"
       env:
         - name: DB_NAME
           value: "sindan_production"
