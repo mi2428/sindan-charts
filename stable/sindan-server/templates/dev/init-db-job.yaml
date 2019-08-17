@@ -27,7 +27,6 @@ spec:
   backoffLimit: 12
   template:
     spec:
-      # restartPolicy: Never
       restartPolicy: OnFailure
       containers:
         - name: migration

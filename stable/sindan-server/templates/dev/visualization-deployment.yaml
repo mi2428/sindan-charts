@@ -3,6 +3,25 @@ kind: Deployment
 metadata:
   name: visualization
   namespace: sindan-server
+
+<<: &container-template
+  image: sindan/visualization:1.2.0
+  env:
+    - name: DB_NAME
+      value: "sindan_production"
+    - name: DB_GRANTED_USER
+      value: "sindan"
+    - name: DB_PASSWORD_FILE
+      value: "/run/secrets/sindan-net.com/db_password"
+    - name: RAILS_SECRETKEY_FILE
+      value: "/run/secrets/sindan-net.com/rails_secret_key_base"
+    - name: ACCOUNTS_FILE
+      value: "/run/secrets/sindan-net.com/accounts"
+  volumeMounts:
+    - name: secrets
+      mountPath: "/run/secrets/sindan-net.com"
+      readOnly: true
+
 spec:
   replicas: 1
   selector:
@@ -15,37 +34,26 @@ spec:
       labels:
         app: visualization
     spec:
+      initContainers:
+        - name: rails-db-migrate
+          <<: *container-template
+          command: ["bundle", "exec", "rails", "db:migrate"]
+        - name: rails-db-seed
+          <<: *job-container-template
+          command: ["bundle", "exec", "rails", "db:seed"]
       containers:
-        - image: sindan/visualization:1.2.0
-          name: visualization
-          env:
-            - name: DB_NAME
-              value: "sindan_production"
-            - name: DB_GRANTED_USER
-              value: "sindan"
-            - name: DB_PASSWORD_FILE
-              value: "/run/secrets/sindan-net.com/db_password"
-            - name: RAILS_SECRETKEY_FILE
-              value: "/run/secrets/sindan-net.com/rails_secret_key_base"
-            - name: ACCOUNTS_FILE
-              value: "/run/secrets/sindan-net.com/accounts"
-          command:
-            - sh
-            - -c
-            - "bundle exec rails s -p 3000 -b '0.0.0.0'"
+        - name: visualization
+          <<: *container-template
+          command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "'0.0.0.0'"]
           ports:
             - name: visualization
               containerPort: 3000
               protocol: TCP
-          volumeMounts:
-            - name: secrets
-              mountPath: "/run/secrets/sindan-net.com"
-              readOnly: true
           livenessProbe:
             httpGet:
               path: /
               port: visualization
-            initialDelaySeconds: 10
+            initialDelaySeconds: 180
             periodSeconds: 1
             timeoutSeconds: 1
             successThreshold: 1
@@ -54,7 +62,7 @@ spec:
             httpGet:
               path: /
               port: visualization
-            initialDelaySeconds: 10
+            initialDelaySeconds: 180
             periodSeconds: 1
             timeoutSeconds: 1
             successThreshold: 2
@@ -70,7 +78,9 @@ spec:
                 path: rails_secret_key_base
               - key: accounts.yml
                 path: accounts
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
