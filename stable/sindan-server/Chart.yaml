@@ -1,5 +1,14 @@
 apiVersion: v1
-appVersion: "1.0"
-description: Server-side SINDAN suite
 name: sindan-server
 version: 0.7.0
+description: Server-side SINDAN suite
+home: http://www.sindan-net.com/
+sources:
+  - https://github.com/SINDAN/sindan-docker
+  - https://github.com/SINDAN/sindan-visualization
+maintainers:
+  - name: Taichi MIYA
+    email: tmiya@protonmail.ch
+icon: https://avatars3.githubusercontent.com/u/31984381
+appVersion: "1.2.0"
+deprecated: false
