@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd-config
-  namespace: sindan-server
+  # namespace: sindan-server
   creationTimestamp: "2019-08-17T14:20:16Z"
 data:
   fluent.conf: |

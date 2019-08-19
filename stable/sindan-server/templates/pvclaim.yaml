@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc
-  namespace: sindan-server
+  # namespace: sindan-server
 spec:
   storageClassName: mysql
   accessModes:
@@ -17,7 +17,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mysql-backup-pvc
-  namespace: sindan-server
+  # namespace: sindan-server
 spec:
   storageClassName: mysql-backup
   accessModes:

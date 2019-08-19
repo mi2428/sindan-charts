@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: visualization
-  namespace: sindan-server
+  # namespace: sindan-server
 
 <<: &container-template
   image: sindan/visualization:1.2.0

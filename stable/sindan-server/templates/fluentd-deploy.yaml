@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fluentd
-  namespace: sindan-server
+  # namespace: sindan-server
 spec:
   replicas: 1
   selector:
