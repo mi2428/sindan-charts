@@ -54,20 +54,20 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /users/sign_in
               port: webrick
             initialDelaySeconds: 10
             periodSeconds: 1
-            timeoutSeconds: 1
+            timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 5
           readinessProbe:
             httpGet:
-              path: /
+              path: /users/sign_in
               port: webrick
             initialDelaySeconds: 10
             periodSeconds: 1
-            timeoutSeconds: 1
+            timeoutSeconds: 3
             successThreshold: 2
             failureThreshold: 2
       volumes:
