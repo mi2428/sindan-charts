@@ -21,6 +21,14 @@ metadata:
       mountPath: "/run/secrets/sindan-net.com"
       readOnly: true
 
+<<: &healthcheck-template
+  httpGet:
+    path: /
+    port: webrick
+  initialDelaySeconds: 10
+  periodSeconds: 1
+  timeoutSeconds: 3
+
 spec:
   replicas: 1
   selector:
@@ -52,23 +60,13 @@ spec:
               containerPort: 3000
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /users/sign_in
-              port: webrick
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 3
+            <<: *healthcheck-template
             successThreshold: 1
             failureThreshold: 5
           readinessProbe:
-            httpGet:
-              path: /users/sign_in
-              port: webrick
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 3
-            successThreshold: 2
-            failureThreshold: 2
+            <<: *healthcheck-template
+            successThreshold: 1
+            failureThreshold: 1
       volumes:
         - name: secrets
           secret:

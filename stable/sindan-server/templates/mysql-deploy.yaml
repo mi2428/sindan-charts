@@ -2,6 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+
+<<: &healthcheck-template
+ exec:
+   command:
+     - /bin/sh
+     - -c
+     - mysqladmin ping -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)
+ initialDelaySeconds: 10
+ periodSeconds: 1
+ timeoutSeconds: 1
+
 spec:
   replicas: 1
   selector:
@@ -29,28 +40,14 @@ spec:
           ports:
             - name: mysql
               containerPort: 3306
-          readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - mysqladmin ping -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 1
-            successThreshold: 2
-            failureThreshold: 2
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - mysqladmin ping -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password)
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 1
+            <<: *healthcheck-template
             successThreshold: 1
-            failureThreshold: 2
+            failureThreshold: 5
+          readinessProbe:
+            <<: *healthcheck-template
+            successThreshold: 1
+            failureThreshold: 1
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql

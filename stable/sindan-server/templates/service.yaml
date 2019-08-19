@@ -4,7 +4,10 @@ metadata:
   name: fluentd
 spec:
   ports:
-    - port: 8080
+    - name: fluentd
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
   selector:
     app: fluentd
 
@@ -31,6 +34,9 @@ metadata:
   name: visualization
 spec:
   ports:
-    - port: 3000
+    - name: visualization
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
   selector:
     app: visualization

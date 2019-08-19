@@ -2,6 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fluentd
+
+<<: &healthcheck-template
+  httpGet:
+    path: /
+    port: healthcheck
+  initialDelaySeconds: 10
+  periodSeconds: 1
+  timeoutSeconds: 1
+
 spec:
   replicas: 1
   selector:
@@ -41,23 +50,13 @@ spec:
               mountPath: "/run/secrets/sindan-net.com"
               readOnly: true
           livenessProbe:
-            httpGet:
-              path: /
-              port: healthcheck
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 1
+            <<: *healthcheck-template
             successThreshold: 1
             failureThreshold: 5
           readinessProbe:
-            httpGet:
-              path: /
-              port: healthcheck
-            initialDelaySeconds: 10
-            periodSeconds: 1
-            timeoutSeconds: 1
-            successThreshold: 2
-            failureThreshold: 2
+            <<: *healthcheck-template
+            successThreshold: 1
+            failureThreshold: 1
       volumes:
         - name: fluentd-config
           configMap:
