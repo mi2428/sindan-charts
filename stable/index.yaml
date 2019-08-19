@@ -3,11 +3,11 @@ entries:
   sindan-server:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-08-15T17:11:08.25946422+09:00"
-    description: A Helm chart for Kubernetes
-    digest: 836eb4807dcf811b2c8d25b40e8b7dd3fea4d439367e59fc8f43b769453d948b
+    created: "2019-08-19T22:41:36.1682+09:00"
+    description: Server-side SINDAN suite
+    digest: 1d7a610ccd5435c71ce2f38460c99b24a143fb10c6bd865c72910f78c14877cf
     name: sindan-server
     urls:
-    - sindan-server-0.1.0.tgz
-    version: 0.1.0
-generated: "2019-08-15T17:11:08.258732619+09:00"
+    - sindan-server-0.7.0.tgz
+    version: 0.7.0
+generated: "2019-08-19T22:41:36.165912+09:00"
