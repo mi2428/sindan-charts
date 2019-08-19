@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: Server-side SINDAN suite
 name: sindan-server
-version: 0.1.0
+version: 0.7.0
