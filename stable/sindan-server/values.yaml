@@ -1,10 +1,12 @@
 fluentd:
-  image: sindan/fluentd:1.2.0
+  image: sindan/fluentd
+  tag: "1.2.0"
   pullPolicy: Always
-  internetPort: 8080
+  servicePort: 8080
 
 mysql:
-  image: mysql:5.7
+  image: mysql
+  tag: "5.7"
   pullPolicy: IfNotPresent
   db:
     name: sindan_production
@@ -22,13 +24,14 @@ mysql-backup:
     storageClassName: mysql-backup
 
 visualization:
-  image: sindan/visualization:1.2.0
+  image: sindan/visualization
+  tag: "1.2.0"
   pullPolicy: Always
   rails:
     secretKeyBase: SWYteW91LWNoYW5nZS10aGlzLXlvdS1uZWVkLXRvLWJ1aWxkLWRvY2tlcmZpbGUtbG9jYWxseQ==
   webui:
     accounts:
       - username: sindan
-        emai: sindan-wg@wide.ad.jp
+        email: sindan-wg@wide.ad.jp
         password: changeme
-  internetPort: 80
+  servicePort: 80
