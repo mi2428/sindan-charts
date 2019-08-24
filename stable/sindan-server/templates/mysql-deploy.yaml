@@ -1,7 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: {{ .Release.Name }}-mysql
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  creationTimestamp: "2019-08-17T14:20:16Z"
 
 <<: &healthcheck-template
  exec:
@@ -18,23 +23,30 @@ spec:
   selector:
     matchLabels:
       app: mysql
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: mysql
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       containers:
-        - image: mysql:5.7
+        - image: {{ .Values.mysql.image }}:{{ .Values.mysql.tag }}
+          imagePullPolicy: {{ .Values.mysql.pullPolicy }}
           name: mysql
           env:
             - name: MYSQL_RANDOM_ROOT_PASSWORD
               value: "yes"
             - name: MYSQL_DATABASE
-              value: "sindan_production"
+              value: {{ .Values.mysql.db.name }}
             - name: MYSQL_USER
-              value: "sindan"
+              value: {{ .Values.mysql.db.user }}
             - name: MYSQL_PASSWORD_FILE
               value: "/run/secrets/sindan-net.com/db_password"
           ports:
@@ -57,10 +69,10 @@ spec:
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
-            claimName: mysql-pvc
+            claimName: {{ .Release.Name }}-mysql-pvc
         - name: mysql-secret
           secret:
-            secretName: sindan-server-secret
+            secretName: {{ .Release.Name }}-secret
             items:
               - key: db-password
                 path: db_password

@@ -2,6 +2,10 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: mysql-backup
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   schedule: "*/1 * * * *"
   jobTemplate:
@@ -10,19 +14,20 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-            - image: mysql:5.7
-              name: mysql-backup
+            - image: {{ .Values.mysql.image }}:{{ .Values.mysql.tag }}
+              imagePullPolicy: {{ .Values.mysql.pullPolicy }}
+              name: {{ .Release.Name }}-mysql-backup
               command:
                 - sh
                 - -c
                 - "mysqldump -h${MYSQL_HOST} -u${MYSQL_USER} -p$(cat /run/secrets/sindan-net.com/db_password) ${MYSQL_DATABASE} > /backup/$(date +%y-%m-%d_%H:%M:%S).dump"
               env:
                 - name: MYSQL_HOST
-                  value: "mysql"
+                  value: {{ .Release.Name }}-mysql
                 - name: MYSQL_DATABASE
-                  value: "sindan_production"
+                  value: {{ .Values.mysql.db.name }}
                 - name: MYSQL_USER
-                  value: "sindan"
+                  value: {{ .Values.mysql.db.user }}
                 - name: MYSQL_PASSWORD_FILE
                   value: "/run/secrets/sindan-net.com/db_password"
               volumeMounts:
@@ -34,10 +39,10 @@ spec:
           volumes:
             - name: mysql-backup-pvc
               persistentVolumeClaim:
-                claimName: mysql-backup-pvc
+                claimName: {{ .Release.Name }}-mysql-backup-pvc
             - name: mysql-secret
               secret:
-                secretName: sindan-server-secret
+                secretName: {{ .Release.Name }}-secret
                 items:
                   - key: db-password
                     path: db_password

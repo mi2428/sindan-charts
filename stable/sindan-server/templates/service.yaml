@@ -23,7 +23,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: {{ .Release.Name }}-mysql
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
     - name: mysql
@@ -32,18 +36,28 @@ spec:
       targetPort: 3306
   selector:
     app: mysql
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: visualization
+  name: {{ .Release.Name }}-visualization
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
     - name: visualization
       protocol: TCP
       port: 3000
-      targetPort: 3000
+      targetPort: {{ .Values.visualization.servicePort }}
   selector:
     app: visualization
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
