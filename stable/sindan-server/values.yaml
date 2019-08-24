@@ -16,14 +16,14 @@ mysql:
     user: sindan
     password: cGFzc3dvcmQ=
   persistence:
-    size: 10Gi
+    size: 2Gi
     storageClassName: mysql
 
 mysqlbackup:
   cron:
     schedule: "0 * * * *"
   persistence:
-    size: 10Gi
+    size: 2Gi
     storageClassName: mysql-backup
 
 visualization:
