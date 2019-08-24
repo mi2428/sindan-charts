@@ -1,15 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: visualization
+  name: {{ .Release.Name }}-visualization
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  creationTimestamp: "2019-08-17T14:20:16Z"
 
 <<: &container-template
-  image: sindan/visualization:1.2.0
+  image: {{ .Values.visualization.image }}:{{ .Values.visualization.tag }}
+  imagePullPolicy: {{ .Values.visualization.pullPolicy }}
   env:
     - name: DB_NAME
-      value: "sindan_production"
+      value: {{ .Values.mysql.db.name }}
     - name: DB_GRANTED_USER
-      value: "sindan"
+      value: {{ .Values.mysql.db.user }}
     - name: DB_PASSWORD_FILE
       value: "/run/secrets/sindan-net.com/db_password"
     - name: RAILS_SECRETKEY_FILE
@@ -34,12 +40,18 @@ spec:
   selector:
     matchLabels:
       app: visualization
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: {{ .Release.Service }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: visualization
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
     spec:
       initContainers:
         - name: wait-for-mysql
@@ -70,7 +82,7 @@ spec:
       volumes:
         - name: secrets
           secret:
-            secretName: sindan-server-secret
+            secretName: {{ .Release.Name }}-secret
             items:
               - key: db-password
                 path: db_password

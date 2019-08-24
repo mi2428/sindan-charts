@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  schedule: "*/1 * * * *"
+  schedule: {{ .Values.mysql-backup.cron.schedule }}
   jobTemplate:
     spec:
       template:
