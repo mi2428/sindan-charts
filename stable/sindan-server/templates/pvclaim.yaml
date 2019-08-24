@@ -3,9 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-mysql-pvc
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   storageClassName: {{ .Values.mysql.persistence.storageClassName }}
   accessModes:
@@ -21,9 +19,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-mysql-backup-pvc
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   storageClassName: {{ .Values.mysql-backup.persistence.storageClassName }}
   accessModes:

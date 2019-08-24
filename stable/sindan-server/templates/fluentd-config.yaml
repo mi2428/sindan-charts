@@ -3,9 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-fluentd-config
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
   creationTimestamp: "2019-08-17T14:20:16Z"
 data:
   fluent.conf: |

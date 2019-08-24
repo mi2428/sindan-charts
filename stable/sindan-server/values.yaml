@@ -1,3 +1,6 @@
+ingress:
+  enabled: false
+
 fluentd:
   image: sindan/fluentd
   tag: "1.2.0"

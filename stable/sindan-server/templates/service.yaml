@@ -3,9 +3,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-fluentd-service
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   ports:
     - name: fluentd
@@ -25,9 +23,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-mysql
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   ports:
     - name: mysql
@@ -47,9 +43,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-visualization
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   ports:
     - name: visualization

@@ -3,9 +3,7 @@ kind: CronJob
 metadata:
   name: mysql-backup
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
 spec:
   schedule: {{ .Values.mysql-backup.cron.schedule }}
   jobTemplate:

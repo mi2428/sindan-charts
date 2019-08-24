@@ -3,9 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-fluentd
   labels:
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 4 }}
   creationTimestamp: "2019-08-17T14:20:16Z"
 
 <<: &healthcheck-template
@@ -21,18 +19,14 @@ spec:
   selector:
     matchLabels:
       app: fluentd
-      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 8 }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: fluentd
-        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels " . | indent 8 }}
     spec:
       initContainers:
         - name: wait-for-mysql
