@@ -1,7 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fluentd-config
+  name: {{ .Release.Name }}-fluentd-config
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   creationTimestamp: "2019-08-17T14:20:16Z"
 data:
   fluent.conf: |
@@ -23,7 +27,7 @@ data:
     <label @sindan>
       <match sindan.log>
         @type mysql_bulk
-        host mysql
+        host "#{ENV['DB_HOST']}"
         port 3306
         database "#{ENV['DB_NAME']}"
         username "#{ENV['DB_GRANTED_USER']}"
@@ -37,7 +41,7 @@ data:
 
       <match sindan.log_campaign>
         @type mysql_bulk
-        host mysql
+        host "#{ENV['DB_HOST']}"
         port 3306
         database "#{ENV['DB_NAME']}"
         username "#{ENV['DB_GRANTED_USER']}"

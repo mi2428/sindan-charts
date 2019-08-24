@@ -1,15 +1,22 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fluentd
+  name: {{ .Release.Name }}-fluentd-service
+  labels:
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   ports:
     - name: fluentd
       protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: {{ .Values.fluentd.servicePort }}
   selector:
     app: fluentd
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 ---
 
