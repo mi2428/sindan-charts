@@ -21,8 +21,6 @@ mysql-backup:
     schedule: "0 * * * *"
   db:
     name: sindan_production-backup
-    user: sindan
-    password: cGFzc3dvcmQ=
   persistence:
     size: 10Gi
     storageClassName: mysql-backup
