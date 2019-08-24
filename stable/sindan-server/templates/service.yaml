@@ -12,9 +12,7 @@ spec:
       targetPort: {{ .Values.fluentd.servicePort }}
   selector:
     app: fluentd
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels" . | indent 4 }}
 
 ---
 
@@ -32,9 +30,7 @@ spec:
       targetPort: 3306
   selector:
     app: mysql
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels" . | indent 4 }}
 
 ---
 
@@ -52,6 +48,4 @@ spec:
       targetPort: {{ .Values.visualization.servicePort }}
   selector:
     app: visualization
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "sindan-server.labels" . | indent 4 }}

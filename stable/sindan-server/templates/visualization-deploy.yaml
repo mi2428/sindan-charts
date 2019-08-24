@@ -38,7 +38,7 @@ spec:
   selector:
     matchLabels:
       app: visualization
-{{ include "sindan-server.labels" . | indent 8 }}
+{{ include "sindan-server.labels" . | indent 6 }}
   strategy:
     type: Recreate
   template:
