@@ -3,7 +3,7 @@ ingress:
 
 fluentd:
   image: sindan/fluentd
-  tag: "1.2.0"
+  tag: "1.3.0"
   pullPolicy: Always
   servicePort: 8080
 
@@ -28,7 +28,7 @@ mysqlbackup:
 
 visualization:
   image: sindan/visualization
-  tag: "1.2.0"
+  tag: "1.3.0"
   pullPolicy: Always
   rails:
     secretKeyBase: SWYteW91LWNoYW5nZS10aGlzLXlvdS1uZWVkLXRvLWJ1aWxkLWRvY2tlcmZpbGUtbG9jYWxseQ==

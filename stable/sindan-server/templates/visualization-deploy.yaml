@@ -10,6 +10,8 @@ metadata:
   image: {{ .Values.visualization.image }}:{{ .Values.visualization.tag }}
   imagePullPolicy: {{ .Values.visualization.pullPolicy }}
   env:
+    - name: DB_HOST
+      value: {{ .Release.Name }}-mysql
     - name: DB_NAME
       value: {{ .Values.mysql.db.name }}
     - name: DB_GRANTED_USER
@@ -29,9 +31,9 @@ metadata:
   httpGet:
     path: /
     port: webrick
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 1
-  timeoutSeconds: 3
+  timeoutSeconds: 5
 
 spec:
   replicas: 1
@@ -50,7 +52,7 @@ spec:
       initContainers:
         - name: wait-for-mysql
           image: mi2428/wait-for-it:latest
-          args: ["-q", "-t", "0", "{{ .Release.Name }}-mysql:3306", "--", "sleep", "10"]
+          args: ["-q", "-t", "0", "${DB_HOST}:3306", "--", "sleep", "10"]
         - name: rails-db-migrate
           <<: *container-template
           command: ["bundle", "exec", "rails", "db:migrate"]

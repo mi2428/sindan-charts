@@ -10,9 +10,9 @@ metadata:
   httpGet:
     path: /
     port: healthcheck
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 1
-  timeoutSeconds: 1
+  timeoutSeconds: 3
 
 spec:
   replicas: 1
