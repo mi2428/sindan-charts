@@ -52,7 +52,7 @@ spec:
       initContainers:
         - name: wait-for-mysql
           image: mi2428/wait-for-it:latest
-          args: ["-q", "-t", "0", "${DB_HOST}:3306", "--", "sleep", "10"]
+          args: ["-q", "-t", "0", "{{ .Release.Name }}-mysql:3306", "--", "sleep", "10"]
         - name: rails-db-migrate
           <<: *container-template
           command: ["bundle", "exec", "rails", "db:migrate"]
