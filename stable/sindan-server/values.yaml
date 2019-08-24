@@ -19,7 +19,7 @@ mysql:
     size: 10Gi
     storageClassName: mysql
 
-mysql-backup:
+mysqlbackup:
   cron:
     schedule: "0 * * * *"
   persistence:

@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-fluentd-config
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
   creationTimestamp: "2019-08-17T14:20:16Z"
 data:
   fluent.conf: |

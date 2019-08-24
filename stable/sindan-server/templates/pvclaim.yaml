@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-mysql-pvc
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
   storageClassName: {{ .Values.mysql.persistence.storageClassName }}
   accessModes:
@@ -17,13 +17,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-mysql-backup-pvc
+  name: {{ .Release.Name }}-mysqlbackup-pvc
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
-  storageClassName: {{ .Values.mysql-backup.persistence.storageClassName }}
+  storageClassName: {{ .Values.mysqlbackup.persistence.storageClassName }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.mysql-backup.persistence.size }}
+      storage: {{ .Values.mysqlbackup.persistence.size }}

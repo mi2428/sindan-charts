@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-fluentd-service
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
   ports:
     - name: fluentd
@@ -23,7 +23,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-mysql
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
   ports:
     - name: mysql
@@ -43,7 +43,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-visualization
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
   ports:
     - name: visualization

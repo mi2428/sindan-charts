@@ -3,7 +3,7 @@ entries:
   sindan-server:
   - apiVersion: v1
     appVersion: 1.2.0
-    created: "2019-08-19T22:54:42.917874+09:00"
+    created: "2019-08-24T21:05:20.551294236+09:00"
     description: Server-side SINDAN suite
     digest: 0e45a19dd537f02caca1fb1f1b59601b311eda9af7498bcdd54f4f7934d43d73
     home: http://www.sindan-net.com/
@@ -18,4 +18,4 @@ entries:
     urls:
     - sindan-server-0.7.0.tgz
     version: 0.7.0
-generated: "2019-08-19T22:54:42.917259+09:00"
+generated: "2019-08-24T21:05:20.55062814+09:00"

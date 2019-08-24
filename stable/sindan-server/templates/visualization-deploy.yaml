@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-visualization
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
   creationTimestamp: "2019-08-17T14:20:16Z"
 
 <<: &container-template
@@ -38,14 +38,14 @@ spec:
   selector:
     matchLabels:
       app: visualization
-{{ include "sindan-server.labels " . | indent 8 }}
+{{ include "sindan-server.labels" . | indent 8 }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: visualization
-{{ include "sindan-server.labels " . | indent 8 }}
+{{ include "sindan-server.labels" . | indent 8 }}
     spec:
       initContainers:
         - name: wait-for-mysql

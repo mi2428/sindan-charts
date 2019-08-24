@@ -1,11 +1,11 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: mysql-backup
+  name: mysqlbackup
   labels:
-{{ include "sindan-server.labels " . | indent 4 }}
+{{ include "sindan-server.labels" . | indent 4 }}
 spec:
-  schedule: {{ .Values.mysql-backup.cron.schedule }}
+  schedule: {{ .Values.mysqlbackup.cron.schedule | quote }}
   jobTemplate:
     spec:
       template:
@@ -14,7 +14,7 @@ spec:
           containers:
             - image: {{ .Values.mysql.image }}:{{ .Values.mysql.tag }}
               imagePullPolicy: {{ .Values.mysql.pullPolicy }}
-              name: {{ .Release.Name }}-mysql-backup
+              name: {{ .Release.Name }}-mysqlbackup
               command:
                 - sh
                 - -c
@@ -29,15 +29,15 @@ spec:
                 - name: MYSQL_PASSWORD_FILE
                   value: "/run/secrets/sindan-net.com/db_password"
               volumeMounts:
-                - name: mysql-backup-pvc
+                - name: mysqlbackup-pvc
                   mountPath: /backup
                 - name: mysql-secret
                   mountPath: "/run/secrets/sindan-net.com"
                   readOnly: true
           volumes:
-            - name: mysql-backup-pvc
+            - name: mysqlbackup-pvc
               persistentVolumeClaim:
-                claimName: {{ .Release.Name }}-mysql-backup-pvc
+                claimName: {{ .Release.Name }}-mysqlbackup-pvc
             - name: mysql-secret
               secret:
                 secretName: {{ .Release.Name }}-secret
